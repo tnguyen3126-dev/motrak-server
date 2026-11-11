@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: motrak-server
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # "starter" = luôn chạy 24/7, KHÔNG ngủ đông, và cho phép gắn ổ đĩa lưu dữ liệu (gói Free không làm được 2 việc này).
+    plan: starter
+    region: singapore
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false          # Render sẽ hỏi bạn nhập mật khẩu khi tạo dịch vụ (không để lộ trên GitHub)
+      - key: DB_PATH
+        value: /app/data/tracker.db
+      - key: RETENTION_DAYS
+        value: "180"
+    disk:
+      name: tracker-data
+      mountPath: /app/data
+      sizeGB: 1
